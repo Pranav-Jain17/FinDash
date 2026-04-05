@@ -6,7 +6,7 @@
 
 .insights-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
 }
 
@@ -33,6 +33,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    word-break: break-word;
 }
 
 .insight-content h3 {
@@ -49,6 +50,14 @@
     color: var(--text-primary);
 }
 
+.trend-good {
+    color: var(--success);
+}
+
+.trend-bad {
+    color: var(--danger);
+}
+
 .insight-subtext {
     font-size: 0.875rem;
     color: var(--text-secondary);
@@ -60,21 +69,46 @@
 
 .observation-card {
     grid-column: 1 / -1;
-    background-color: var(--bg-sidebar);
-    color: white;
+    background-image: linear-gradient(135deg, var(--primary) 0%, #5d5c71 100%);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.15);
 }
 
 .observation-card .insight-icon {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
 }
 
 .observation-card h3 {
-    color: var(--text-sidebar);
+    color: #e0e7ff;
 }
 
 .observation-card .insight-text {
     font-size: 1.25rem;
     font-weight: 500;
-    line-height: 1.5;
+    line-height: 1.6;
     margin-top: 8px;
+    letter-spacing: 0.01em;
+}
+
+@media (max-width: 768px) {
+    .insights-page {
+        gap: 24px;
+    }
+
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insight-card {
+        padding: 20px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .observation-card {
+        grid-column: auto;
+    }
 }

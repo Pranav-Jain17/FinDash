@@ -16,7 +16,7 @@
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 24px;
 }
 
@@ -38,6 +38,7 @@
     font-size: 2rem;
     font-weight: 700;
     color: var(--text-primary);
+    word-break: break-word;
 }
 
 .summary-amount.income {
@@ -50,7 +51,7 @@
 
 .charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 24px;
 }
 
@@ -73,7 +74,7 @@
     height: 200px;
     padding-top: 20px;
     border-bottom: 2px solid var(--border-light);
-    gap: 16px;
+    gap: 8px;
 }
 
 .bar-column {
@@ -115,6 +116,7 @@
     font-size: 0.75rem;
     transition: opacity 0.2s;
     pointer-events: none;
+    z-index: 10;
 }
 
 .bar:hover .tooltip {
@@ -163,4 +165,22 @@
     color: var(--text-secondary);
     font-style: italic;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    .dashboard-page {
+        gap: 24px;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .css-bar-chart {
+        gap: 4px;
+    }
 }

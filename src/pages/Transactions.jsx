@@ -3,9 +3,10 @@ import { useAppContext } from '../context/AppContext';
 import './transactions.css';
 
 export default function Transactions() {
-    const { transactions, role, addTransaction } = useAppContext();
+    const { transactions, role, addTransaction, updateTransaction, deleteTransaction } = useAppContext();
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('All');
+    const [editingId, setEditingId] = useState(null);
 
     const [formData, setFormData] = useState({
         date: new Date().toISOString().split('T')[0],
@@ -24,24 +25,70 @@ export default function Transactions() {
         e.preventDefault();
         if (!formData.amount || !formData.category) return;
 
-        addTransaction({
-            ...formData,
-            amount: parseFloat(formData.amount)
-        });
+        if (editingId) {
+            updateTransaction(editingId, {
+                ...formData,
+                amount: parseFloat(formData.amount)
+            });
+            setEditingId(null);
+        } else {
+            addTransaction({
+                ...formData,
+                amount: parseFloat(formData.amount)
+            });
+        }
 
-        setFormData({ ...formData, amount: '', category: '' });
+        setFormData({
+            date: new Date().toISOString().split('T')[0],
+            amount: '',
+            category: '',
+            type: 'Expense'
+        });
+    };
+
+    const handleEditClick = (t) => {
+        setEditingId(t.id);
+        setFormData({
+            date: t.date,
+            amount: t.amount,
+            category: t.category,
+            type: t.type
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setFormData({
+            date: new Date().toISOString().split('T')[0],
+            amount: '',
+            category: '',
+            type: 'Expense'
+        });
+    };
+
+    const exportCSV = () => {
+        const headers = ['Date,Category,Type,Amount'];
+        const csvData = filteredTransactions.map(t => `${t.date},${t.category},${t.type},${t.amount}`);
+        const blob = new Blob([[...headers, ...csvData].join('\n')], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'transactions_export.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
     };
 
     return (
-        <div className="transactions-page">
+        <div className="transactions-page fade-in">
             <header className="page-header">
                 <h1>Transactions</h1>
                 <p>Manage and view your financial history.</p>
             </header>
 
             {role === 'Admin' && (
-                <div className="card admin-panel">
-                    <h3>Add New Transaction (Admin Only)</h3>
+                <div className="card admin-panel slide-up">
+                    <h3>{editingId ? 'Edit Transaction' : 'Add New Transaction'}</h3>
                     <form onSubmit={handleSubmit} className="transaction-form">
                         <input
                             type="date"
@@ -58,7 +105,7 @@ export default function Transactions() {
                         />
                         <input
                             type="text"
-                            placeholder="Category (e.g., Food)"
+                            placeholder="Category"
                             value={formData.category}
                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                             required
@@ -70,12 +117,21 @@ export default function Transactions() {
                             <option value="Expense">Expense</option>
                             <option value="Income">Income</option>
                         </select>
-                        <button type="submit" className="btn-primary">Add</button>
+                        <div className="form-actions">
+                            <button type="submit" className="btn-primary">
+                                {editingId ? 'Update' : 'Add'}
+                            </button>
+                            {editingId && (
+                                <button type="button" className="btn-secondary" onClick={handleCancelEdit}>
+                                    Cancel
+                                </button>
+                            )}
+                        </div>
                     </form>
                 </div>
             )}
 
-            <div className="card list-container">
+            <div className="card list-container slide-up">
                 <div className="filters">
                     <input
                         type="text"
@@ -93,6 +149,7 @@ export default function Transactions() {
                         <option value="Income">Income Only</option>
                         <option value="Expense">Expense Only</option>
                     </select>
+                    <button onClick={exportCSV} className="btn-secondary">Export CSV</button>
                 </div>
 
                 <div className="table-responsive">
@@ -103,11 +160,12 @@ export default function Transactions() {
                                 <th>Category</th>
                                 <th>Type</th>
                                 <th className="amount-col">Amount</th>
+                                {role === 'Admin' && <th className="actions-col">Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
                             {filteredTransactions.map((t) => (
-                                <tr key={t.id}>
+                                <tr key={t.id} className={editingId === t.id ? 'editing-row fade-in' : 'fade-in'}>
                                     <td>{t.date}</td>
                                     <td className="category-cell">{t.category}</td>
                                     <td>
@@ -118,11 +176,17 @@ export default function Transactions() {
                                     <td className={`amount-col ${t.type.toLowerCase()}`}>
                                         ${t.amount.toFixed(2)}
                                     </td>
+                                    {role === 'Admin' && (
+                                        <td className="actions-col">
+                                            <button className="btn-action edit" onClick={() => handleEditClick(t)}>Edit</button>
+                                            <button className="btn-action delete" onClick={() => deleteTransaction(t.id)}>Delete</button>
+                                        </td>
+                                    )}
                                 </tr>
                             ))}
                             {filteredTransactions.length === 0 && (
                                 <tr>
-                                    <td colSpan="4" className="empty-state">No transactions found.</td>
+                                    <td colSpan={role === 'Admin' ? "5" : "4"} className="empty-state">No transactions found.</td>
                                 </tr>
                             )}
                         </tbody>
