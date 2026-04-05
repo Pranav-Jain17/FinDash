@@ -9,12 +9,11 @@ const defaultTransactions = [
     { id: 4, date: '2026-03-20', amount: 150, category: 'Entertainment', type: 'Expense' }
 ];
 
-export const AppProvider = ({ children }) => {
-    const [transactions, setTransactions] = useState(() => {
-        const saved = localStorage.getItem('findash_data');
-        return saved ? JSON.parse(saved) : defaultTransactions;
-    });
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+export const AppProvider = ({ children }) => {
+    const [transactions, setTransactions] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [role, setRole] = useState('Admin');
 
     const [theme, setTheme] = useState(() => {
@@ -22,8 +21,21 @@ export const AppProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        localStorage.setItem('findash_data', JSON.stringify(transactions));
-    }, [transactions]);
+        const fetchInitialData = async () => {
+            setIsLoading(true);
+            await delay(1200);
+            const saved = localStorage.getItem('findash_data');
+            setTransactions(saved ? JSON.parse(saved) : defaultTransactions);
+            setIsLoading(false);
+        };
+        fetchInitialData();
+    }, []);
+
+    useEffect(() => {
+        if (!isLoading) {
+            localStorage.setItem('findash_data', JSON.stringify(transactions));
+        }
+    }, [transactions, isLoading]);
 
     useEffect(() => {
         localStorage.setItem('findash_theme', theme);
@@ -34,25 +46,44 @@ export const AppProvider = ({ children }) => {
         setTheme(prev => prev === 'light' ? 'dark' : 'light');
     };
 
-    const addTransaction = (newTransaction) => {
+    const addTransaction = async (newTransaction) => {
+        setIsLoading(true);
+        await delay(800);
         setTransactions((prev) => [
             ...prev,
             { ...newTransaction, id: Date.now() }
         ]);
+        setIsLoading(false);
     };
 
-    const updateTransaction = (id, updatedTransaction) => {
+    const updateTransaction = async (id, updatedTransaction) => {
+        setIsLoading(true);
+        await delay(800);
         setTransactions((prev) =>
             prev.map((t) => (t.id === id ? { ...updatedTransaction, id } : t))
         );
+        setIsLoading(false);
     };
 
-    const deleteTransaction = (id) => {
+    const deleteTransaction = async (id) => {
+        setIsLoading(true);
+        await delay(800);
         setTransactions((prev) => prev.filter((t) => t.id !== id));
+        setIsLoading(false);
     };
 
     return (
-        <AppContext.Provider value={{ transactions, role, setRole, theme, toggleTheme, addTransaction, updateTransaction, deleteTransaction }}>
+        <AppContext.Provider value={{
+            transactions,
+            isLoading,
+            role,
+            setRole,
+            theme,
+            toggleTheme,
+            addTransaction,
+            updateTransaction,
+            deleteTransaction
+        }}>
             {children}
         </AppContext.Provider>
     );

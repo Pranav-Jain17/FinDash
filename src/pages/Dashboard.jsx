@@ -3,7 +3,15 @@ import SummaryCard from '../components/dashboard/SummaryCard';
 import './dashboard.css';
 
 export default function Dashboard() {
-    const { transactions } = useAppContext();
+    const { transactions, isLoading } = useAppContext();
+
+    if (isLoading) {
+        return (
+            <div className="loading-container fade-in">
+                <div className="spinner"></div>
+            </div>
+        );
+    }
 
     const totalIncome = transactions
         .filter((t) => t.type === 'Income')
@@ -25,19 +33,19 @@ export default function Dashboard() {
     const maxCategoryAmount = Math.max(...Object.values(categoryData), 1);
 
     return (
-        <div className="dashboard-page">
+        <div className="dashboard-page fade-in">
             <header className="page-header">
                 <h1>Dashboard Overview</h1>
                 <p>Welcome back! Here is your financial summary.</p>
             </header>
 
-            <section className="dashboard-grid">
+            <section className="dashboard-grid slide-up">
                 <SummaryCard title="Total Balance" amount={totalBalance} />
                 <SummaryCard title="Total Income" amount={totalIncome} type="income" />
                 <SummaryCard title="Total Expenses" amount={totalExpense} type="expense" />
             </section>
 
-            <section className="charts-grid">
+            <section className="charts-grid slide-up">
                 <div className="card chart-card">
                     <h2>Recent Activity</h2>
                     <div className="css-bar-chart">
@@ -45,13 +53,14 @@ export default function Dashboard() {
                             <div key={t.id} className="bar-column">
                                 <div
                                     className={`bar ${t.type.toLowerCase()}`}
-                                    style={{ height: `${(t.amount / Math.max(totalIncome, totalExpense)) * 100}%` }}
+                                    style={{ height: `${(t.amount / Math.max(totalIncome, totalExpense, 1)) * 100}%` }}
                                 >
                                     <span className="tooltip">${t.amount}</span>
                                 </div>
-                                <span className="bar-label">{new Date(t.date).getDate()}/{new Date(t.date).getMonth() + 1}/{new Date(t.date).getFullYear()}</span>
+                                <span className="bar-label">{new Date(t.date).getDate()}</span>
                             </div>
                         ))}
+                        {transactions.length === 0 && <p className="empty-msg">No activity yet.</p>}
                     </div>
                 </div>
 

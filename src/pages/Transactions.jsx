@@ -3,7 +3,7 @@ import { useAppContext } from '../context/AppContext';
 import './transactions.css';
 
 export default function Transactions() {
-    const { transactions, role, addTransaction, updateTransaction, deleteTransaction } = useAppContext();
+    const { transactions, isLoading, role, addTransaction, updateTransaction, deleteTransaction } = useAppContext();
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('All');
     const [editingId, setEditingId] = useState(null);
@@ -21,18 +21,18 @@ export default function Transactions() {
         return matchesSearch && matchesType;
     }).sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.amount || !formData.category) return;
 
         if (editingId) {
-            updateTransaction(editingId, {
+            await updateTransaction(editingId, {
                 ...formData,
                 amount: parseFloat(formData.amount)
             });
             setEditingId(null);
         } else {
-            addTransaction({
+            await addTransaction({
                 ...formData,
                 amount: parseFloat(formData.amount)
             });
@@ -79,8 +79,16 @@ export default function Transactions() {
         window.URL.revokeObjectURL(url);
     };
 
+    if (isLoading && transactions.length === 0) {
+        return (
+            <div className="loading-container fade-in">
+                <div className="spinner"></div>
+            </div>
+        );
+    }
+
     return (
-        <div className="transactions-page fade-in">
+        <div className={`transactions-page fade-in ${isLoading ? 'opacity-50' : ''}`}>
             <header className="page-header">
                 <h1>Transactions</h1>
                 <p>Manage and view your financial history.</p>
@@ -95,6 +103,7 @@ export default function Transactions() {
                             value={formData.date}
                             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                             required
+                            disabled={isLoading}
                         />
                         <input
                             type="number"
@@ -102,6 +111,7 @@ export default function Transactions() {
                             value={formData.amount}
                             onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                             required
+                            disabled={isLoading}
                         />
                         <input
                             type="text"
@@ -109,20 +119,22 @@ export default function Transactions() {
                             value={formData.category}
                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                             required
+                            disabled={isLoading}
                         />
                         <select
                             value={formData.type}
                             onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                            disabled={isLoading}
                         >
                             <option value="Expense">Expense</option>
                             <option value="Income">Income</option>
                         </select>
                         <div className="form-actions">
-                            <button type="submit" className="btn-primary">
-                                {editingId ? 'Update' : 'Add'}
+                            <button type="submit" className="btn-primary" disabled={isLoading}>
+                                {isLoading ? 'Processing...' : (editingId ? 'Update' : 'Add')}
                             </button>
                             {editingId && (
-                                <button type="button" className="btn-secondary" onClick={handleCancelEdit}>
+                                <button type="button" className="btn-secondary" onClick={handleCancelEdit} disabled={isLoading}>
                                     Cancel
                                 </button>
                             )}
@@ -139,17 +151,21 @@ export default function Transactions() {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="search-input"
+                        disabled={isLoading}
                     />
                     <select
                         value={filterType}
                         onChange={(e) => setFilterType(e.target.value)}
                         className="filter-select"
+                        disabled={isLoading}
                     >
                         <option value="All">All Types</option>
                         <option value="Income">Income Only</option>
                         <option value="Expense">Expense Only</option>
                     </select>
-                    <button onClick={exportCSV} className="btn-secondary">Export CSV</button>
+                    <button onClick={exportCSV} className="btn-secondary" disabled={isLoading || filteredTransactions.length === 0}>
+                        Export CSV
+                    </button>
                 </div>
 
                 <div className="table-responsive">
@@ -178,8 +194,8 @@ export default function Transactions() {
                                     </td>
                                     {role === 'Admin' && (
                                         <td className="actions-col">
-                                            <button className="btn-action edit" onClick={() => handleEditClick(t)}>Edit</button>
-                                            <button className="btn-action delete" onClick={() => deleteTransaction(t.id)}>Delete</button>
+                                            <button className="btn-action edit" onClick={() => handleEditClick(t)} disabled={isLoading}>Edit</button>
+                                            <button className="btn-action delete" onClick={() => deleteTransaction(t.id)} disabled={isLoading}>Delete</button>
                                         </td>
                                     )}
                                 </tr>

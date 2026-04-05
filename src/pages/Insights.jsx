@@ -2,7 +2,15 @@ import { useAppContext } from '../context/AppContext';
 import './insights.css';
 
 export default function Insights() {
-    const { transactions } = useAppContext();
+    const { transactions, isLoading } = useAppContext();
+
+    if (isLoading) {
+        return (
+            <div className="loading-container fade-in">
+                <div className="spinner"></div>
+            </div>
+        );
+    }
 
     const expenses = transactions.filter(t => t.type === 'Expense');
     const income = transactions.filter(t => t.type === 'Income').reduce((sum, t) => sum + t.amount, 0);
@@ -59,13 +67,13 @@ export default function Insights() {
     };
 
     return (
-        <div className="insights-page">
+        <div className="insights-page fade-in">
             <header className="page-header">
                 <h1>Insights</h1>
                 <p>Data-driven observations about your finances.</p>
             </header>
 
-            <div className="insights-grid">
+            <div className="insights-grid slide-up">
                 <div className="card insight-card highlight">
                     <div className="insight-icon">🔥</div>
                     <div className="insight-content">
