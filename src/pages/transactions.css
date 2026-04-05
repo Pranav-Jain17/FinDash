@@ -1,0 +1,139 @@
+.transactions-page {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.admin-panel {
+    border-left: 4px solid var(--primary);
+    background-color: #f8fafc;
+}
+
+.admin-panel h3 {
+    margin-bottom: 16px;
+    font-size: 1rem;
+    color: var(--primary);
+}
+
+.transaction-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    align-items: center;
+}
+
+.transaction-form input,
+.transaction-form select {
+    padding: 10px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    outline: none;
+}
+
+.transaction-form input:focus,
+.transaction-form select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.btn-primary {
+    padding: 10px 24px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.filters {
+    display: flex;
+    gap: 16px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+}
+
+.filter-select {
+    padding: 10px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    min-width: 150px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.transactions-table th {
+    padding: 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.transactions-table td {
+    padding: 16px;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-primary);
+}
+
+.transactions-table tr:last-child td {
+    border-bottom: none;
+}
+
+.transactions-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.category-cell {
+    font-weight: 500;
+}
+
+.amount-col {
+    text-align: right;
+    font-weight: 600;
+}
+
+.amount-col.income {
+    color: var(--success);
+}
+
+.amount-col.expense {
+    color: var(--danger);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px !important;
+    color: var(--text-secondary);
+    font-style: italic;
+}

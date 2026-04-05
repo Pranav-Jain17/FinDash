@@ -1,0 +1,166 @@
+.dashboard-page {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.page-header h1 {
+    font-size: 1.875rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.page-header p {
+    color: var(--text-secondary);
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+}
+
+.summary-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.summary-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.summary-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.summary-amount.income {
+    color: var(--success);
+}
+
+.summary-amount.expense {
+    color: var(--danger);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+}
+
+.chart-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.chart-card h2 {
+    font-size: 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 12px;
+}
+
+.css-bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 200px;
+    padding-top: 20px;
+    border-bottom: 2px solid var(--border-light);
+    gap: 16px;
+}
+
+.bar-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.bar {
+    width: 100%;
+    max-width: 40px;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: height 0.3s ease;
+}
+
+.bar.income {
+    background-color: var(--success);
+}
+
+.bar.expense {
+    background-color: var(--danger);
+}
+
+.bar .tooltip {
+    opacity: 0;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-sidebar);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.bar:hover .tooltip {
+    opacity: 1;
+}
+
+.bar-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.category-info {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.progress-track {
+    height: 8px;
+    background-color: var(--border-light);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary);
+    border-radius: 999px;
+    transition: width 0.5s ease;
+}
+
+.empty-msg {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+}
