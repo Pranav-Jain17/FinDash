@@ -1,6 +1,6 @@
 # FinDash - Personal Finance Dashboard
 
-FinDash is a responsive, modern front-end web application built to help users track their finances, visualize their spending, and gain actionable insights. It features simulated Role-Based Access Control (RBAC), data persistence, and custom CSS-only visualizations.
+FinDash is a responsive, modern front-end web application built to help users track their finances, visualize their spending, and gain actionable insights. It features simulated Role-Based Access Control (RBAC), data persistence, a mock API for simulated network requests, and custom CSS-only visualizations.
 
 ## 🚀 Features
 
@@ -11,6 +11,7 @@ FinDash is a responsive, modern front-end web application built to help users tr
 * **Smart Insights:** Automatically calculates the highest spending category, month-over-month comparisons, and generates a dynamic "smart observation" based on the user's savings rate and spending trends.
 
 **Advanced Enhancements Included:**
+* **Mock API Integration:** Simulates network latency and asynchronous data fetching with global loading states and UI feedback (spinners, disabled controls).
 * **Dark Mode:** System-wide dark/light theme toggle using CSS variables.
 * **Data Persistence:** Transactions and theme preferences are saved to the browser's `localStorage` so data remains between page reloads.
 * **CSV Export:** Users can download their filtered transaction history as a `.csv` file.
@@ -64,8 +65,9 @@ The application follows a standard feature-based React structure. Global UI comp
 ### State Management
 Instead of introducing heavy libraries like Redux, this project utilizes the **React Context API** (`AppContext.jsx`). It centralizes the global state for:
 1. `transactions`: The array of financial data.
-2. `role`: The current active role (Viewer/Admin).
-3. `theme`: The current UI theme (Light/Dark).
+2. `isLoading`: Tracks the status of the mock API network requests.
+3. `role`: The current active role (Viewer/Admin).
+4. `theme`: The current UI theme (Light/Dark).
 
 ### Styling Strategy
 The UI was built strictly with plain CSS to demonstrate a strong command of modern CSS architecture. 
@@ -88,4 +90,6 @@ The `Insights.jsx` component uses array `reduce` and `filter` methods to aggrega
 
 ### 4. CSS-Only Bar Chart
 In the Dashboard, the recent activity chart slices the last 5 transactions. It finds the maximum total value (either total income or total expense) to establish a 100% ceiling. It then calculates the height of each bar using `(amount / maximumValue) * 100%` and applies it via an inline React style to a styled CSS block, creating a lightweight, responsive bar chart.
-```
+
+### 5. Mock API Simulation
+To mimic a real-world full-stack application, the app includes a frontend-only Mock API. All CRUD operations (create, read, update, delete) in the `AppContext` are asynchronous functions wrapped with an artificial delay (latency). A global `isLoading` state triggers CSS spinners, dims the UI, and disables form inputs and action buttons while "network requests" are processing, preventing race conditions and enhancing the user experience.
